@@ -1,7 +1,10 @@
-if(process.env.NODE_ENV != "Production"){
-    require('dotenv').config();
-}
+// if(process.env.NODE_ENV != "Production"){
+//     require('dotenv').config();
+// }
 
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 
 const express = require("express");
 const app = express();
@@ -52,7 +55,10 @@ const store = MongoStore.create({
     touchAfter:24*3600, //for lazy updates
 })
 
-store.on("error", ()=>{
+// store.on("error", ()=>{
+//     console.log("ERROR in mongo session store", err);
+// });
+store.on("error", (err) => {
     console.log("ERROR in mongo session store", err);
 });
 
