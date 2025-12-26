@@ -26,106 +26,102 @@ module.exports.showListing = async (req, res)=>{
 
 };
 
-// module.exports.createListing = async (req, res, next)=>{
-//     let url = req.file.path;
-//     let filename = req.file.filename;
-//     let listing = req.body.listing;
-//     const newListing = new Listing (listing);
-//     newListing.owner = req.user._id;
-//     newListing.image = {url, filename};
-//     await newListing.save();
-//     console.log(newListing);
-//     req.flash("success", "New listing was successfully added!");
-//     res.redirect("/listings");
-// };
-
-// module.exports.createListing =  async (req,res)=>{
-//  //Create Route
-
-
-//     // const response = await axios.get("https://nominatim.openstreetmap.org/search", {
-//     //     params: {
-//     //         q: req.body.listing.location,
-//     //         format: "json",
-//     //         limit: 1,
-//     //     },
-//     // });
-//     // Example of line 46 area
-//     let response = await geocodingClient.forwardGeocode({
-//         query: req.body.listing.location,
-//         limit: 1,
-//     }).send();
-
-
-//     let url = req.file.path; //need for cloudinary
-//     let filename = req.file.filename; //need for cloudinary
-
-//     const newListing = new Listing(req.body.listing); //abstact all the details
-//     newListing.owner = req.user._id;
-//     newListing.image = {url, filename};
-    
-//     //but Mongoose GeoJion needs first longitude then latitude (opssite).
-//     newListing.geometry = {
-//         type : "Point",
-//         coordinates: [
-//             parseFloat(response.data[0].lon),
-//             parseFloat(response.data[0].lat)
-//         ]
-//     };
-
-//     let saveListing = await newListing.save();
-//     console.log(saveListing);
-//     req.flash("success","New Listings Created !");
-//     res.redirect("/listings");
-
-// };
-
-module.exports.createListing = async (req, res) => {
-    try {
-        // 1. Use Axios with OpenStreetMap (Nominatim)
-        // Note: Added 'User-Agent' to avoid 403 errors on Render
-        const response = await axios.get("https://nominatim.openstreetmap.org/search", {
-            params: {
-                q: req.body.listing.location,
-                format: "json",
-                limit: 1,
-            },
-            headers: {
-                'User-Agent': 'VoyanzaProject (your-email@example.com)' // Identify your app
-            }
-        });
-
-        if (!response.data || response.data.length === 0) {
-            req.flash("error", "Location not found!");
-            return res.redirect("/listings/new");
-        }
-
-        let url = req.file.path; 
-        let filename = req.file.filename; 
-
-        const newListing = new Listing(req.body.listing);
-        newListing.owner = req.user._id;
-        newListing.image = { url, filename };
-
-        // 2. Map coordinates correctly from Axios response
-        newListing.geometry = {
-            type: "Point",
-            coordinates: [
-                parseFloat(response.data[0].lon),
-                parseFloat(response.data[0].lat)
-            ]
-        };
-
-        let saveListing = await newListing.save();
-        req.flash("success", "New Listings Created!");
-        res.redirect("/listings");
-
-    } catch (err) {
-        console.error("CREATE ERROR:", err);
-        req.flash("error", "Something went wrong while creating listing.");
-        res.redirect("/listings");
-    }
+module.exports.createListing = async (req, res, next)=>{
+    let url = req.file.path;
+    let filename = req.file.filename;
+    let listing = req.body.listing;
+    const newListing = new Listing (listing);
+    newListing.owner = req.user._id;
+    newListing.image = {url, filename};
+    await newListing.save();
+    console.log(newListing);
+    req.flash("success", "New listing was successfully added!");
+    res.redirect("/listings");
 };
+
+module.exports.createListing =  async (req,res)=>{
+ //Create Route
+
+
+    const response = await axios.get("https://nominatim.openstreetmap.org/search", {
+        params: {
+            q: req.body.listing.location,
+            format: "json",
+            limit: 1,
+        },
+    });
+    
+
+
+    let url = req.file.path; //need for cloudinary
+    let filename = req.file.filename; //need for cloudinary
+
+    const newListing = new Listing(req.body.listing); //abstact all the details
+    newListing.owner = req.user._id;
+    newListing.image = {url, filename};
+    
+    //but Mongoose GeoJion needs first longitude then latitude (opssite).
+    newListing.geometry = {
+        type : "Point",
+        coordinates: [
+            parseFloat(response.data[0].lon),
+            parseFloat(response.data[0].lat)
+        ]
+    };
+
+    let saveListing = await newListing.save();
+    console.log(saveListing);
+    req.flash("success","New Listings Created !");
+    res.redirect("/listings");
+
+};
+
+// module.exports.createListing = async (req, res) => {
+//     try {
+//         // 1. Use Axios with OpenStreetMap (Nominatim)
+//         // Note: Added 'User-Agent' to avoid 403 errors on Render
+//         const response = await axios.get("https://nominatim.openstreetmap.org/search", {
+//             params: {
+//                 q: req.body.listing.location,
+//                 format: "json",
+//                 limit: 1,
+//             },
+//             headers: {
+//                 'User-Agent': 'VoyanzaProject (your-email@example.com)' // Identify your app
+//             }
+//         });
+
+//         if (!response.data || response.data.length === 0) {
+//             req.flash("error", "Location not found!");
+//             return res.redirect("/listings/new");
+//         }
+
+//         let url = req.file.path; 
+//         let filename = req.file.filename; 
+
+//         const newListing = new Listing(req.body.listing);
+//         newListing.owner = req.user._id;
+//         newListing.image = { url, filename };
+
+//         // 2. Map coordinates correctly from Axios response
+//         newListing.geometry = {
+//             type: "Point",
+//             coordinates: [
+//                 parseFloat(response.data[0].lon),
+//                 parseFloat(response.data[0].lat)
+//             ]
+//         };
+
+//         let saveListing = await newListing.save();
+//         req.flash("success", "New Listings Created!");
+//         res.redirect("/listings");
+
+//     } catch (err) {
+//         console.error("CREATE ERROR:", err);
+//         req.flash("error", "Something went wrong while creating listing.");
+//         res.redirect("/listings");
+//     }
+// };
 
 
 
