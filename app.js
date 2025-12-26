@@ -106,10 +106,17 @@ app.all(/.*/, (req, res, next)=>{
 })
 
 
-app.use((err, req, res, next)=>{
-    let{statusCode= 500, message="something went wrong!"}= err;
-    res.status(statusCode).render("Error.ejs", {message});
+// app.use((err, req, res, next)=>{
+//     let{statusCode= 500, message="something went wrong!"}= err;
+//     res.status(statusCode).render("Error.ejs", {message});
+// });
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = "Something went wrong!" } = err;
+  console.error("ERROR MESSAGE:", err.message);
+  console.error("ERROR STACK:", err.stack);
+  res.status(statusCode).render("Error.ejs", { message });
 });
+
 
 
 app.listen(port,()=>{
