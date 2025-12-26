@@ -43,14 +43,32 @@ module.exports.createListing =  async (req,res)=>{
  //Create Route
 
 
-    const response = await axios.get("https://nominatim.openstreetmap.org/search", {
-        params: {
-            q: req.body.listing.location,
-            format: "json",
-            limit: 1,
-        },
-    });
+    // const response = await axios.get("https://nominatim.openstreetmap.org/search", {
+    //     params: {
+    //         q: req.body.listing.location,
+    //         format: "json",
+    //         limit: 1,
+    //     },
+    // });
     
+    const response = await axios.get(
+      "https://nominatim.openstreetmap.org/search",
+      {
+        params: {
+          q: req.body.listing.location,
+          format: "json",
+          limit: 1,
+        },
+        headers: {
+          "User-Agent": "Wanderlust-App/1.0 (mp8795116@gmail.com)"
+        },
+        timeout: 5000
+      }
+    );
+    
+    if (!response.data || response.data.length === 0) {
+        throw new ExpressError(400, "Invalid location. Please try another place.");
+    }
 
 
     let url = req.file.path; //need for cloudinary
@@ -76,52 +94,6 @@ module.exports.createListing =  async (req,res)=>{
 
 };
 
-// module.exports.createListing = async (req, res) => {
-//     try {
-//         // 1. Use Axios with OpenStreetMap (Nominatim)
-//         // Note: Added 'User-Agent' to avoid 403 errors on Render
-//         const response = await axios.get("https://nominatim.openstreetmap.org/search", {
-//             params: {
-//                 q: req.body.listing.location,
-//                 format: "json",
-//                 limit: 1,
-//             },
-//             headers: {
-//                 'User-Agent': 'VoyanzaProject (your-email@example.com)' // Identify your app
-//             }
-//         });
-
-//         if (!response.data || response.data.length === 0) {
-//             req.flash("error", "Location not found!");
-//             return res.redirect("/listings/new");
-//         }
-
-//         let url = req.file.path; 
-//         let filename = req.file.filename; 
-
-//         const newListing = new Listing(req.body.listing);
-//         newListing.owner = req.user._id;
-//         newListing.image = { url, filename };
-
-//         // 2. Map coordinates correctly from Axios response
-//         newListing.geometry = {
-//             type: "Point",
-//             coordinates: [
-//                 parseFloat(response.data[0].lon),
-//                 parseFloat(response.data[0].lat)
-//             ]
-//         };
-
-//         let saveListing = await newListing.save();
-//         req.flash("success", "New Listings Created!");
-//         res.redirect("/listings");
-
-//     } catch (err) {
-//         console.error("CREATE ERROR:", err);
-//         req.flash("error", "Something went wrong while creating listing.");
-//         res.redirect("/listings");
-//     }
-// };
 
 
 
