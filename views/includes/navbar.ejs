@@ -1,27 +1,63 @@
 <style>
-  .search-btn{
+  /* Navbar background and z-index fix */
+  .custom-navbar {
+    background-color: #ffffff !important;
+    z-index: 1050 !important; /* Visual hierarchy: filter icons ke upar dikhega */
+    position: relative;
+  }
+
+  .search-btn {
     background-color: #fe424d;
     color: #fff;
     border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
   }
-  .search-btn:hover{
-    background-color: #fe424d;
+  
+  .search-btn:hover {
+    background-color: #e03943;
     color: #fff;
   }
+  
   .search-btn i {
     display: inline;
     margin-right: 0.3rem;
   }
-  .search-inp{
+  
+  .search-inp {
     border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
-    width: 400px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* Responsive Adjustments for Mobile / Collapse view */
+  @media (max-width: 767.98px) {
+    .navbar-collapse {
+      background-color: #ffffff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Mobile view dropdown clarity ke liye shadow */
+      margin-top: 0.5rem;
+    }
+
+    .search-inp {
+      max-width: 100%;
+    }
+
+    form[role="search"] {
+      width: 100%;
+      margin: 0.8rem 0;
+    }
+
+    .navbar-nav .nav-link {
+      padding: 0.5rem 0;
+    }
   }
 </style>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+<nav class="navbar navbar-expand-md custom-navbar border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,21 +67,21 @@
       <div class="navbar-nav">
         <a class="nav-link" href="/listings">Explore</a>
       </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-        <input  class="form-control me-2 search-inp" type="search" placeholder="Search destinations"/>
-        <button class="btn search-btn" type="submit"><i class="fa-duotone fa-solid fa-magnifying-glass"></i>Search</button>
-      </form>
+      <div class="navbar-nav mx-auto w-100 justify-content-center">
+        <form class="d-flex w-100 justify-content-center" role="search">
+          <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations"/>
+          <button class="btn search-btn" type="submit"><i class="fa-duotone fa-solid fa-magnifying-glass"></i>Search</button>
+        </form>
       </div>
       <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Airbnb your home</a>
+        <a class="nav-link" href="/listings/new">Add Your Property</a>
         <% if(!currUser){ %>
           <a class="nav-link" href="/signup"><b>SignUp</b></a>
           <a class="nav-link" href="/login"><b>LogIn</b></a>
         <% } %>
         <% if(currUser){ %>
           <a class="nav-link" href="/logout">Log out</a>
-        <%  } %>
+        <% } %>
       </div>
     </div>
   </div>
